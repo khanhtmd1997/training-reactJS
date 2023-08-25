@@ -1,5 +1,5 @@
 const express = require("express");
-const ModelUser = require("../models/user.model");
+const Model = require("../models/user.model");
 // const ModelRole = require("../models/role.model");
 // const ModelToken = require("../models/token.model");
 const routes = express.Router();
@@ -19,7 +19,7 @@ routes.post("/register", async (req, res) => {
   });
 
   try {
-    const isValid = validForm(body, res);
+    const isValid = validForm(data, res);
 
     if (isValid) {
       const dataUsers = await Model.find();
@@ -93,66 +93,6 @@ routes.post("/login", async (req, res) => {
       message: error.message,
       statusCode: 500,
     });
-  }
-});
-
-//Get all Method
-routes.get("/users", async (req, res) => {
-  try {
-    // if (req.headers.authorization) {
-    const listUser = await ModelUser.find(req.query ? req.query : null);
-    res.status(200).json({
-      statusCode: 200,
-      data: listUser,
-    });
-    // } else {
-    //   res.status(401).json({
-    //     statusCode: 401,
-    //     message: "Bạn không có quyền cho request này",
-    //   });
-    // }
-  } catch (error) {
-    res.status(500).json({ message: error.message + req.params });
-  }
-});
-
-//Get by ID user
-routes.get("/users/:id", async (req, res) => {
-  try {
-    // const dataToken = await ModelToken.find();
-    // const findToken = dataToken.find(
-    //   (el) => `Bearer ${el.token}` === req.headers.authorization
-    // );
-    // if (req.headers.authorization) {
-    const data = await ModelUser.findById(req.params.id);
-    if (data) {
-      res.status(200).json({
-        statusCode: 200,
-        data: {
-          fullName: data.fullName,
-          phone: data.phone,
-          avatar: data.avatar,
-          address: data.address,
-          email: data.email,
-          isAdmin: data.isAdmin,
-          roleId: data.roleId,
-        },
-      });
-    } else {
-      res.status(400).json({
-        statusCode: 400,
-        message: "Không tìm thấy tài khoản",
-      });
-    }
-
-    // } else {
-    //   res.status(401).json({
-    //     statusCode: 401,
-    //     message: "Bạn không có quyền cho request này",
-    //   });
-    // }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 });
 

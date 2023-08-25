@@ -2,6 +2,23 @@ const express = require("express");
 const Model = require("../models/role.model");
 const routerRole = express.Router();
 
+function queryParams(query) {
+  let filter = {};
+  Object.keys(query).forEach((el) => {
+    if (el === "pageIndex" || el === "pageSize") return;
+    else {
+      if (query[el] !== "" && query[el] !== undefined && query[el] !== null) {
+        filter = {
+          ...filter,
+          [`${el}`]: query[el],
+        };
+      }
+    }
+  });
+
+  return filter;
+}
+
 // {
 //   "name": "Admin",
 //   "description": "Quản trị",
@@ -28,9 +45,30 @@ routerRole.post("/", async (req, res) => {
 
 //Get all Method
 routerRole.get("/", async (req, res) => {
+  var pageIndex = parseInt(req.query.pageIndex) || 0; //for next page pass 1 here
+  var pageSize = parseInt(req.query.pageSize) || 20;
+  const query = queryParams(req.query);
   try {
-    const data = await Model.find(req.query ? req.query : null);
-    res.json(data);
+    await Model.find(query)
+      .sort({ update_at: -1 })
+      .skip(pageIndex * pageSize) //Notice here
+      .limit(pageSize)
+      .exec((err, doc) => {
+        if (err) {
+          return res.json(err);
+        }
+        Model.countDocuments(query).exec((count_error, count) => {
+          if (err) {
+            return res.json(count_error);
+          }
+          return res.json({
+            total: count,
+            pageIndex,
+            pageSize,
+            data: doc,
+          });
+        });
+      });
   } catch (error) {
     res.status(500).json({ message: error.message + req.params });
   }

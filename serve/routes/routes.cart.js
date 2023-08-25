@@ -4,16 +4,49 @@ const ModelProduct = require("../models/product.model");
 
 const routesCart = express.Router();
 const jwt = require("jsonwebtoken");
+function queryParams(query) {
+  let filter = {};
+  Object.keys(query).forEach((el) => {
+    if (el === "pageIndex" || el === "pageSize") return;
+    else {
+      if (query[el] !== "" && query[el] !== undefined && query[el] !== null) {
+        filter = {
+          ...filter,
+          [`${el}`]: query[el],
+        };
+      }
+    }
+  });
+
+  return filter;
+}
 
 //Get all Method
 routesCart.get("/", async (req, res) => {
+  var pageIndex = parseInt(req.query.pageIndex) || 0; //for next page pass 1 here
+  var pageSize = parseInt(req.query.pageSize) || 20;
+  const query = queryParams(req.query);
   try {
-    // if (req.headers.authorization) {
-    const list = await ModelCart.find(req.query ? req.query : null);
-    res.status(200).json({
-      statusCode: 200,
-      data: list,
-    });
+    await ModelCart.find(query)
+      .sort({ update_at: -1 })
+      .skip(pageIndex * pageSize) //Notice here
+      .limit(pageSize)
+      .exec((err, doc) => {
+        if (err) {
+          return res.json(err);
+        }
+        ModelCart.countDocuments(query).exec((count_error, count) => {
+          if (err) {
+            return res.json(count_error);
+          }
+          return res.json({
+            total: count,
+            pageIndex,
+            pageSize,
+            data: doc,
+          });
+        });
+      });
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: error.message });
   }

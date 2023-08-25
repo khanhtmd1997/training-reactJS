@@ -4,22 +4,48 @@ const ModelProduct = require("../models/product.model");
 // const ModelToken = require("../models/token.model");
 const routesProducts = express.Router();
 const jwt = require("jsonwebtoken");
+function queryParams(query) {
+  let filter = {};
+  Object.keys(query).forEach((el) => {
+    if (el === "pageIndex" || el === "pageSize") return;
+    else {
+      if (query[el] !== "" && query[el] !== undefined && query[el] !== null) {
+        filter = {
+          ...filter,
+          [`${el}`]: query[el],
+        };
+      }
+    }
+  });
 
+  return filter;
+}
 //Get all Method
 routesProducts.get("/", async (req, res) => {
+  var pageIndex = parseInt(req.query.pageIndex) || 0; //for next page pass 1 here
+  var pageSize = parseInt(req.query.pageSize) || 20;
+  const query = queryParams(req.query);
   try {
-    // if (req.headers.authorization) {
-    const list = await ModelProduct.find(req.query ? req.query : null);
-    res.status(200).json({
-      statusCode: 200,
-      data: list,
-    });
-    // } else {
-    //   res.status(401).json({
-    //     statusCode: 401,
-    //     message: "Bạn không có quyền cho request này",
-    //   });
-    // }
+    await ModelProduct.find(query)
+      .sort({ update_at: -1 })
+      .skip(pageIndex * pageSize) //Notice here
+      .limit(pageSize)
+      .exec((err, doc) => {
+        if (err) {
+          return res.json(err);
+        }
+        ModelProduct.countDocuments(query).exec((count_error, count) => {
+          if (err) {
+            return res.json(count_error);
+          }
+          return res.json({
+            total: count,
+            pageIndex,
+            pageSize,
+            data: doc,
+          });
+        });
+      });
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: error.message });
   }
