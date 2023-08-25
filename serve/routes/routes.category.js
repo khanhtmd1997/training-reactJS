@@ -54,16 +54,22 @@ routesCategories.get("/", async (req, res) => {
 
 routesCategories.get("/:id", async (req, res) => {
   try {
-    // if (req.headers.authorization) {
-    const id = req.params.id;
-    if (id) {
-      const data = await ModelCategory.findById(id);
+    if (req.headers.authorization) {
+      const id = req.params.id;
+      if (id) {
+        const data = await ModelCategory.findById(id);
 
-      if (data) {
-        res.status(200).json({
-          statusCode: 200,
-          data,
-        });
+        if (data) {
+          res.status(200).json({
+            statusCode: 200,
+            data,
+          });
+        } else {
+          res.status(400).json({
+            statusCode: 400,
+            message: "Không tìm thấy category",
+          });
+        }
       } else {
         res.status(400).json({
           statusCode: 400,
@@ -71,10 +77,7 @@ routesCategories.get("/:id", async (req, res) => {
         });
       }
     } else {
-      res.status(400).json({
-        statusCode: 400,
-        message: "Không tìm thấy category",
-      });
+      res.status(401).json({ message: "Không có quyền", statusCode: 401 });
     }
   } catch (error) {
     res.status(500).json({ message: error.message + req.params });
@@ -87,26 +90,29 @@ routesCategories.post("/", async (req, res) => {
     description: req.body.description,
   });
   try {
-    // if (req.headers.authorization) {
-    const requiredValue = Object.keys(req.body).reduce((obj, item) => {
-      if (item === "category" || item === "description") {
-        if (req.body[item] === "") {
-          obj[item] = `${item} không được bỏ trống`;
+    if (req.headers.authorization) {
+      const requiredValue = Object.keys(req.body).reduce((obj, item) => {
+        if (item === "category" || item === "description") {
+          if (req.body[item] === "") {
+            obj[item] = `${item} không được bỏ trống`;
+          }
+          return obj;
         }
-        return obj;
+      }, {});
+      if (Object.keys(requiredValue).length === 0) {
+        const list = await data.save();
+        res.status(200).json({
+          statusCode: 200,
+          data: "Tạo mới category thành công",
+        });
+      } else {
+        res.status(200).json({
+          statusCode: 422,
+          data: requiredValue,
+        });
       }
-    }, {});
-    if (Object.keys(requiredValue).length === 0) {
-      const list = await data.save();
-      res.status(200).json({
-        statusCode: 200,
-        data: "Tạo mới category thành công",
-      });
     } else {
-      res.status(200).json({
-        statusCode: 422,
-        data: requiredValue,
-      });
+      res.status(401).json({ message: "Không có quyền", statusCode: 401 });
     }
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: error.message });
@@ -119,44 +125,47 @@ routesCategories.put("/:id", async (req, res) => {
     description: req.body.description,
   };
   try {
-    // if (req.headers.authorization) {
-    const requiredValue = Object.keys(req.body).reduce((obj, item) => {
-      if (item === "category" || item === "description") {
-        if (req.body[item] === "") {
-          obj[item] = `${item} không được bỏ trống`;
+    if (req.headers.authorization) {
+      const requiredValue = Object.keys(req.body).reduce((obj, item) => {
+        if (item === "category" || item === "description") {
+          if (req.body[item] === "") {
+            obj[item] = `${item} không được bỏ trống`;
+          }
+          return obj;
         }
-        return obj;
-      }
-    }, {});
+      }, {});
 
-    const id = req.params.id;
+      const id = req.params.id;
 
-    if (Object.keys(requiredValue).length === 0) {
-      const dataCategory = await ModelCategory.find();
-      const findCategory = dataCategory.find((el) => el.id === id);
-      if (Object.keys(findCategory).length === 0) {
-        res
-          .status(400)
-          .json({ statusCode: 400, message: "Category không tồn tại" });
+      if (Object.keys(requiredValue).length === 0) {
+        const dataCategory = await ModelCategory.find();
+        const findCategory = dataCategory.find((el) => el.id === id);
+        if (Object.keys(findCategory).length === 0) {
+          res
+            .status(400)
+            .json({ statusCode: 400, message: "Category không tồn tại" });
+        } else {
+          const updatedData = data;
+          const options = { new: true };
+          const result = await ModelCategory.findByIdAndUpdate(
+            id,
+            updatedData,
+            options
+          );
+
+          res.send({
+            data: result,
+            statusCode: 200,
+          });
+        }
       } else {
-        const updatedData = data;
-        const options = { new: true };
-        const result = await ModelCategory.findByIdAndUpdate(
-          id,
-          updatedData,
-          options
-        );
-
-        res.send({
-          data: result,
-          statusCode: 200,
+        res.status(200).json({
+          statusCode: 422,
+          data: requiredValue,
         });
       }
     } else {
-      res.status(200).json({
-        statusCode: 422,
-        data: requiredValue,
-      });
+      res.status(401).json({ message: "Không có quyền", statusCode: 401 });
     }
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: error.message });
@@ -166,25 +175,29 @@ routesCategories.put("/:id", async (req, res) => {
 //Delete by ID Method
 routesCategories.delete("/:id", async (req, res) => {
   try {
-    const id = req.params.id;
-    const listProduct = await ModelProduct.find(req.query ? req.query : null);
-    const findId = listProduct.find((el) => el.categoryId === id);
-    if (Object.keys(findId).length > 0) {
-      res.status(400).json({
-        statusCode: 400,
-        message:
-          "Không thể xóa category vì product đang sử dụng category này, Vui lòng xóa product trước khi xóa category",
-      });
-    } else {
-      const data = await ModelCategory.findByIdAndDelete(id);
-      if (data) {
-        res.send({
-          message: "Xóa category thành công",
-          statusCode: 200,
+    if (req.headers.authorization) {
+      const id = req.params.id;
+      const listProduct = await ModelProduct.find(req.query ? req.query : null);
+      const findId = listProduct.find((el) => el.categoryId === id);
+      if (Object.keys(findId).length > 0) {
+        res.status(400).json({
+          statusCode: 400,
+          message:
+            "Không thể xóa category vì product đang sử dụng category này, Vui lòng xóa product trước khi xóa category",
         });
       } else {
-        res.status(400).json({ statusCode: 400, message: error.message });
+        const data = await ModelCategory.findByIdAndDelete(id);
+        if (data) {
+          res.send({
+            message: "Xóa category thành công",
+            statusCode: 200,
+          });
+        } else {
+          res.status(400).json({ statusCode: 400, message: error.message });
+        }
       }
+    } else {
+      res.status(401).json({ message: "Không có quyền", statusCode: 401 });
     }
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: error.message });

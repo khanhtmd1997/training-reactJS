@@ -8,20 +8,27 @@ const jwt = require("jsonwebtoken");
 //Register User
 routes.post("/register", async (req, res) => {
   const data = new Model({
-    email: req.body.email ?? "",
-    password: req.body.password ?? "",
-    fullName: req.body.fullName ?? "",
-    phone: req.body.phone ?? "",
-    avatar: req.body.avatar ?? "",
-    address: req.body.address ?? "",
+    email: req.body?.email ?? "",
+    password: req.body?.password ?? "",
+    fullName: req.body?.fullName ?? "",
+    phone: req.body?.phone ?? "",
+    avatar: req.body?.avatar ?? "",
+    address: req.body?.address ?? "",
     roleId: "",
     isAdmin: false,
   });
 
   try {
-    const isValid = validForm(data, res);
+    const requiredValue = Object.keys(req.body).reduce((obj, item) => {
+      if (item === "email" || item === "password" || item === "fullName") {
+        if (req.body[item] === "") {
+          obj[item] = `${item} không được bỏ trống`;
+        }
+        return obj;
+      }
+    }, {});
 
-    if (isValid) {
+    if (Object.keys(requiredValue).length === 0) {
       const dataUsers = await Model.find();
       const filterUser = dataUsers.filter((el) => el.email === data.email);
       if (Object.keys(filterUser).length > 0) {
@@ -40,6 +47,11 @@ routes.post("/register", async (req, res) => {
           });
         }
       }
+    } else {
+      res.status(200).json({
+        statusCode: 422,
+        data: requiredValue,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: error.message, statusCode: 500 });

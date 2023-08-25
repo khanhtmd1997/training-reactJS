@@ -1,63 +1,72 @@
 // import { Modal, notification } from "antd";
 import Axios from "axios";
 import { useEffect, useState } from "react";
+import SnackbarComponent from "../components/snackbar";
 // notification.config({
 //   maxCount: 1,
 //   duration: 2,
 // });
-// Axios.interceptors.response.use(
-//   (response) => {
-//     // do something with the response data
+Axios.interceptors.response.use(
+  (response) => {
+    // do something with the response data
 
-//     if (response && response.data.statusCode === 500) {
-//       notification.error({
-//         message: "Thông báo!",
-//         description: response.data.message,
-//       });
-//     }
-//     if (response && response.data.statusCode === 200 && response.data.message) {
-//       notification.success({
-//         message: "Thông báo!",
-//         description: response.data.message,
-//       });
-//     }
-//     return response;
-//   },
-//   (error) => {
-//     notification.config({
-//       maxCount: 1,
-//       duration: 4,
-//     });
-//     let mess = "";
-//     if (error?.response?.status === 401) {
-//       window.location.href = "/login";
-//       localStorage.clear();
-//       return;
-//     }
-//     if (error && error.response) {
-//       mess = error.response.data.message;
-//       if (mess) {
-//         notification.error({
-//           message: "Thông báo!",
-//           description: (
-//             <p
-//               dangerouslySetInnerHTML={{
-//                 __html: mess,
-//               }}
-//             />
-//           ),
-//         });
-//       }
-//     } else {
-//       notification.error({
-//         message: "Thông báo!",
-//         description: "Lỗi hệ thống",
-//         maxCount: 1,
-//       });
-//     }
-//     return error.response;
-//   }
-// );
+    if (response && response.data.statusCode === 500) {
+      return (
+        <SnackbarComponent
+          open
+          handleClose={() => false}
+          message={response?.data?.message || response?.message}
+        />
+      );
+    }
+    if (response && response.data.statusCode === 200 && response.data.message) {
+      return (
+        <SnackbarComponent
+          open
+          handleClose={() => false}
+          message={response?.data?.message || response?.message}
+          severity="success"
+        />
+      );
+    }
+    return response;
+  },
+  (error) => {
+    let mess = "";
+    if (error?.response?.status === 401) {
+      window.location.href = "/login";
+      localStorage.clear();
+      return;
+    }
+    if (error && error.response) {
+      mess = error.response.data.message;
+      if (mess) {
+        return (
+          <SnackbarComponent
+            open
+            handleClose={() => false}
+            message={
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: mess,
+                }}
+              />
+            }
+          />
+        );
+      }
+    } else {
+      return (
+        <SnackbarComponent
+          open
+          handleClose={() => false}
+          message="Lỗi hệ thống"
+        />
+      );
+    }
+    return error.response;
+  }
+);
 
 //gọi api ko có auth method get
 async function defaultGet(endpoint) {
