@@ -103,8 +103,8 @@ routerRole.post("/", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
       if (Object.keys(requiredValue).length === 0) {
         await data.save();
@@ -135,8 +135,8 @@ routerRole.put("/:id", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
       const id = req.params.id;
       const updatedData = req.body;

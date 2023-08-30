@@ -1,7 +1,8 @@
 const express = require("express");
 const ModelProduct = require("../models/product.model");
 // const ModelRole = require("../models/role.model");
-// const ModelToken = require("../models/token.model");
+const ModelCategory = require("../models/category.model");
+const ModelCategoryChild = require("../models/categoryChild.model");
 const routesProducts = express.Router();
 const jwt = require("jsonwebtoken");
 function queryParams(query) {
@@ -135,16 +136,39 @@ routesProducts.post("/", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
 
       if (Object.keys(requiredValue).length === 0) {
-        await data.save();
-        res.status(200).json({
-          statusCode: 200,
-          message: "Tạo mới product thành công",
+        const dataCategory = await ModelCategory.find();
+
+        const dataChild = await ModelCategoryChild.find();
+        let isActive = false;
+        dataCategory.forEach((el) => {
+          if (el.isActive) {
+            dataChild.forEach((child) => {
+              if (child.categoryId === req.body.categoryId && child.isActive) {
+                isActive = true;
+              } else isActive = false;
+            });
+          } else {
+            isActive = false;
+          }
         });
+
+        if (isActive) {
+          await data.save();
+          res.status(200).json({
+            statusCode: 200,
+            message: "Tạo mới product thành công",
+          });
+        } else {
+          res.status(400).json({
+            statusCode: 400,
+            message: "Category hoặc Category child chưa được active",
+          });
+        }
       } else {
         res.status(200).json({
           statusCode: 422,
@@ -207,8 +231,8 @@ routesProducts.put("/:id", async (req, res) => {
         if (req.body[item] === "") {
           obj[item] = `${item} không được bỏ trống`;
         }
-        return obj;
       }
+      return obj;
     }, {});
     const id = req.params.id;
     if (Object.keys(requiredValue).length === 0) {
@@ -219,18 +243,41 @@ routesProducts.put("/:id", async (req, res) => {
           .status(400)
           .json({ statusCode: 400, message: "Product không tồn tại" });
       } else {
-        const updatedData = data;
-        const options = { new: true };
-        const result = await ModelProduct.findByIdAndUpdate(
-          id,
-          updatedData,
-          options
-        );
+        const dataCategory = await ModelCategory.find();
 
-        res.send({
-          data: result,
-          statusCode: 200,
+        const dataChild = await ModelCategoryChild.find();
+        let isActive = false;
+        dataCategory.forEach((el) => {
+          if (el.isActive) {
+            dataChild.forEach((child) => {
+              if (child.categoryId === req.body.categoryId && child.isActive) {
+                isActive = true;
+              } else isActive = false;
+            });
+          } else {
+            isActive = false;
+          }
         });
+
+        if (isActive) {
+          const updatedData = data;
+          const options = { new: true };
+          const result = await ModelProduct.findByIdAndUpdate(
+            id,
+            updatedData,
+            options
+          );
+
+          res.send({
+            data: result,
+            statusCode: 200,
+          });
+        } else {
+          res.status(400).json({
+            statusCode: 400,
+            message: "Category hoặc Category child chưa được active",
+          });
+        }
       }
     } else {
       res.status(200).json({

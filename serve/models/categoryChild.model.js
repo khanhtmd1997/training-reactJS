@@ -1,18 +1,15 @@
 const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
-  category: {
+  categoryId: {
     type: String,
   },
-  description: {
+  name: {
     type: String,
-  },
-  children: {
-    type: Array,
   },
   isActive: {
     type: Boolean,
   },
 });
 
-module.exports = mongoose.model("categories", dataSchema);
+module.exports = mongoose.model("categoryChild", dataSchema);

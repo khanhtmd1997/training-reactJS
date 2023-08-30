@@ -119,8 +119,8 @@ routerUser.post("/", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
       if (Object.keys(requiredValue).length === 0) {
         const dataUsers = await ModelUser.find();
@@ -171,8 +171,8 @@ routerUser.put("/change-password", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
       if (Object.keys(requiredValue).length === 0) {
         const user = await ModelUser.findById(req.body.id);
@@ -237,8 +237,8 @@ routerUser.put("/:id", async (req, res) => {
           if (req.body[item] === "") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
       if (Object.keys(requiredValue).length === 0) {
         const dataRole = await ModelRole.find();

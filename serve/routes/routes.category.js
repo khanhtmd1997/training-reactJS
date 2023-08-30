@@ -1,7 +1,9 @@
 const express = require("express");
 const ModelCategory = require("../models/category.model");
 const ModelProduct = require("../models/product.model");
+const ModelCategoryChild = require("../models/categoryChild.model");
 const routesCategories = express.Router();
+
 const jwt = require("jsonwebtoken");
 
 function queryParams(query) {
@@ -35,10 +37,23 @@ routesCategories.get("/", async (req, res) => {
         if (err) {
           return res.json(err);
         }
-        ModelCategory.countDocuments(query).exec((count_error, count) => {
+        ModelCategory.countDocuments(query).exec(async (count_error, count) => {
           if (err) {
             return res.json(count_error);
           }
+          const dataChild = await ModelCategoryChild.find();
+          const data = [...doc];
+          data.forEach((el) => {
+            dataChild.forEach((child) => {
+              if (child.categoryId === el._id.toString()) {
+                el.children.push({
+                  // categoryId: child.categoryId,
+                  name: child.name,
+                  isActive: child.isActive,
+                });
+              }
+            });
+          });
           return res.json({
             total: count,
             pageIndex,
@@ -88,19 +103,21 @@ routesCategories.post("/", async (req, res) => {
   let data = new ModelCategory({
     category: req.body.category,
     description: req.body.description,
+    isActive: req.body?.isActive ?? false,
   });
   try {
     if (req.headers.authorization) {
       const requiredValue = Object.keys(req.body).reduce((obj, item) => {
         if (item === "category" || item === "description") {
-          if (req.body[item] === "") {
+          if (req.body[item] === "" && typeof req.body[item] !== "boolean") {
             obj[item] = `${item} không được bỏ trống`;
           }
-          return obj;
         }
+        return obj;
       }, {});
+
       if (Object.keys(requiredValue).length === 0) {
-        const list = await data.save();
+        await data.save();
         res.status(200).json({
           statusCode: 200,
           data: "Tạo mới category thành công",
@@ -123,6 +140,7 @@ routesCategories.put("/:id", async (req, res) => {
   let data = {
     category: req.body.category,
     description: req.body.description,
+    isActive: req.body.isActive ?? false,
   };
   try {
     if (req.headers.authorization) {
