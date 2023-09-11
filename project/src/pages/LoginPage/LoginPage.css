@@ -1,0 +1,78 @@
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2478ba;
+}
+
+.login-form-container {
+    position: relative;
+    width: 40vw;
+    padding: 48px;
+    box-shadow: 0 0 21px rgb(0 0 0/20%);
+    background: #fff;
+    border-radius: 8px;
+}
+
+.title {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container .logo {
+    width: 70%;
+}
+
+label.form-label {
+    width: 100%;
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.form-control {
+    height: 40px;
+    width: 100%;
+    display: block;
+    padding: 6px 12px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.mb-16 {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
+
+.error-feedback {
+    color: red;
+    margin-top: 8px;
+}
+
+.btn-submit-login {
+    margin: 15px 0px;
+    height: 45px;
+    width: 100%;
+    font-size: 20px;
+    color: #fff;
+    background-color: #03a9f4;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 1px solid #03a9f4;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-login:hover {
+    background-color: #2258a5;
+}

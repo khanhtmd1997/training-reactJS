@@ -19,16 +19,47 @@ routes.post("/register", async (req, res) => {
   });
 
   try {
-    const requiredValue = Object.keys(req.body).reduce((obj, item) => {
-      if (item === "email" || item === "password" || item === "fullName") {
-        if (req.body[item] === "") {
-          obj[item] = `${item} không được bỏ trống`;
+    // const requiredValue = Object.keys(req.body).reduce((obj, item) => {
+    //   if (item === "email" || item === "password" || item === "fullName") {
+    //     if (req.body[item] === "") {
+    //       obj[item] = `${item} không được bỏ trống`;
+          
+    //     }
+    //   } else {
+    //     obj = {}
+    //   }
+    //   return obj;
+    // }, {});
+    const arrayValid = []
+    if( Object.keys(req.body).length) {
+      Object.keys(req.body).forEach((item) => {
+        if (req.body[item] === "" && item === 'email') {
+          arrayValid.push({
+            key: 'email',
+            value: "Không được bỏ trống"
+          })
+          
         }
-        return obj;
-      }
-    }, {});
 
-    if (Object.keys(requiredValue).length === 0) {
+        if (req.body[item] === "" && item === 'password') {
+          arrayValid.push({
+            key: 'password',
+            value: "Không được bỏ trống"
+          }) 
+          
+        }
+
+        if (req.body[item] === "" && item === 'fullName') {
+          arrayValid.push({
+            key: 'fullName',
+            value: "Không được bỏ trống"
+          }) 
+          
+        }
+      })
+    }
+    
+    if (arrayValid.length === 0) {
       const dataUsers = await Model.find();
       const filterUser = dataUsers.filter((el) => el.email === data.email);
       if (Object.keys(filterUser).length > 0) {
@@ -50,7 +81,7 @@ routes.post("/register", async (req, res) => {
     } else {
       res.status(200).json({
         statusCode: 422,
-        data: requiredValue,
+        data: arrayValid,
       });
     }
   } catch (error) {
