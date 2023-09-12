@@ -1,0 +1,92 @@
+.error{
+    color: red
+  }
+  body {
+    background-color: #fff9f9;  background: rgb(34,193,195);
+    background: linear-gradient(0deg, rgb(188, 219, 219) 0%, rgb(207, 221, 223) 86%);
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h2 {
+    text-align: center;
+      color:#ffffff;
+      font-size: 30px;
+  }
+  
+  
+ label {
+    color: rgb(0, 0, 0);
+    padding-left: 4px;
+ 
+  }
+  
+  .form_register form input {
+      border-radius: 15px;
+      font-size: 15px;
+      padding:10px 0px;
+      width: 100%;
+      margin-top: 3px;
+      border:1px solid rgb(0, 0, 0) ;
+      display: block;
+  }
+  .form_register {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(194, 216, 210, 0.829);
+    border-radius: 10px;
+    padding: 0px 20px;
+    width: 420px;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+  form{
+    width: 100%;
+    margin-bottom: 50px;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    width: 400px;
+    height: 100vh;
+    box-shadow: 0 2px 5px rgb(255, 255, 255);
+  }
+  form .form-sign{
+    margin-bottom: 25px;
+    width: 100%;
+  }
+  
+  .form_register form button {
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #000000;
+    padding: 7px 15px;
+    font-size: 15px;
+
+  }
+  
+  .form_register form button:hover {
+    background-color: #ffffff;
+    color:rgb(0, 0, 0);
+    border: 2px solid rgb(255, 255, 255);
+
+  }
+  
+  @media screen and (max-width: 900px) {
+    .form_register{
+      width: 60vw;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .form_register{
+      width: 40vw;
+    }
+  } 
+   
+  

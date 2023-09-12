@@ -1,0 +1,87 @@
+.error{
+    color: red
+  }
+  body {
+    background-color: #fff9f9;  background: rgb(255, 255, 255);
+    background: linear-gradient(0deg, rgb(188, 219, 219) 0%, rgb(207, 221, 223) 86%);
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h2 {
+    text-align: center;
+      color:#000000;
+      font-size: 30px;
+  }
+  
+  label {
+    color: rgb(0, 0, 0);
+    padding-left: 4px;
+  }
+  
+  .form_container form input {
+      border-radius: 15px;
+      font-size: 15px;
+      padding:10px 0px;
+      width: 100%;
+      margin-top: 3px;
+      border:1px solid rgb(255, 255, 255) ;
+      display: block;
+  }
+  .form_container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(247, 253, 252, 0.829);
+    border-radius: 10px;
+    padding: 0px 20px;
+    width: 420px;
+    height: 60vh;
+    justify-content: center;
+    align-items: center;
+  }
+  form{
+    width: 100%;
+    margin-bottom: 50px;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    width: 400px;
+    box-shadow: 0 2px 5px rgb(255, 255, 255);
+  }
+  form .form-group{
+    margin-bottom: 25px;
+    width: 100%;
+  }
+  
+  .form_container form button {
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    padding: 7px 25px;
+    font-size: 15px;
+  }
+  
+  .form_container form button:hover {
+    background-color: rgb(255, 255, 255);
+    color:rgb(2, 2, 2);
+    border: 2px solid rgb(255, 255, 255);
+  }
+  
+  @media screen and (max-width: 900px) {
+    .form_container{
+      width: 60vw;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .form_container{
+      width: 40vw;
+    }
+  } 
+   
+  
