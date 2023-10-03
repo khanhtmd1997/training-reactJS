@@ -1,42 +1,69 @@
 .product-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .product-list li {
-    margin-bottom: 10px;
-  }
-  
-  .product-name {
-    font-weight: bold;
-  }
-  
-  .pagination {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-  }
-  
-  .pagination li {
-    margin: 0 5px;
-  }
-  
-  .pagination li button {
-    padding: 5px 10px;
-    background-color: #eee;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .pagination li button.disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .pagination li button.active {
-    background-color: #333;
-    color: white;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.product-card {
+  width: 300px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #eef5f8;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+body {
+  background-color: #fcfcfc;
+}
+.product-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.product-card h3 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.product-card p {
+  margin-bottom: 5px;
+}
+
+.discounted-price-container {
+  background-color: #ffffff;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #ff0000;
+}
+
+.discounted-price {
+  color: #000000;
+  font-weight: bold;
+}
+
+.discount-percentage {
+  color: #fa1900;
+  font-weight: bold;
+}
+
+.buy-now-button {
+  padding: 10px;
+  background-color: #caffcc;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.buy-now-button {
+  background-color: #f44336;
+}

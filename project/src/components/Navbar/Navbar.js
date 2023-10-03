@@ -1,51 +1,47 @@
-import { useEffect, useState } from "react";
-// import { getTopNav } from "./../Navbar/Navbar";
-import './Navbar.css';
+import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
+import { styled } from "@mui/system";
 
-const Navbar = () => {
-  const [navItems, setNavItems] = useState([]);
-  const [collapse, setCollapse] = useState("nav__menu");
-  const [toggleIcon, setToggleIcon] = useState("toggler__icon");
+const Navbar = styled(AppBar)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  backgroundColor: "#2f6077",
+}));
 
-//   useEffect(() => {
-//     setNavItems(getTopNav());
-//   }, []);
-// xử lí sự kiện
-  const onToggle = () => {
-    collapse === "nav__menu"
-      ? setCollapse("nav__menu nav__collapse")
-      : setCollapse("nav__menu");
+const NavbarLink = styled(Button)(({ theme }) => ({
+  marginRight: theme.spacing(2),
+  color: "white",
+  textDecoration: "none",
+}));
 
-    toggleIcon === "toggler__icon"
-      ? setToggleIcon("toggler__icon toggle")
-      : setToggleIcon("toggler__icon");
-  };
-
+const NavbarComponent = () => {
   return (
-    <div className="nav__wrapper">
-      <div className="container">
-        <nav className="nav">
-          <a href="#" className="nav__brand">
-            Logo
-          </a>
-          <ul className={collapse}>
-            {navItems.map((item) => (
-              <li key={item.id} className="nav__item">
-                <a href={item.href} className="nav__link">
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className={toggleIcon} onClick={onToggle}>
-            <div className="line__1"></div>
-            <div className="line__2"></div>
-            <div className="line__3"></div>
-          </div>
-        </nav>
-      </div>
-    </div>
+    <Navbar position="static">
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, color: "white" }}
+        >
+          Mua điện thoại ở đây
+        </Typography>
+        <NavbarLink component={Link} to="/">
+          Home
+        </NavbarLink>
+        <NavbarLink component={Link} to="/cart">
+          Cart
+        </NavbarLink>
+        <NavbarLink component={Link} to="/products">
+          Product
+        </NavbarLink>
+        <NavbarLink component={Link} to="/register">
+          Register
+        </NavbarLink>
+        <NavbarLink component={Link} to="/login">
+          Login
+        </NavbarLink>
+      </Toolbar>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default NavbarComponent;

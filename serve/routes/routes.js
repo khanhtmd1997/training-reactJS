@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 //Register User
 routes.post("/register", async (req, res) => {
+  console.log(req.body);
   const data = new Model({
     email: req.body?.email ?? "",
     password: req.body?.password ?? "",
@@ -24,8 +25,8 @@ routes.post("/register", async (req, res) => {
         if (req.body[item] === "") {
           obj[item] = `${item} không được bỏ trống`;
         }
-        return obj;
       }
+      return obj;
     }, {});
 
     if (Object.keys(requiredValue).length === 0) {

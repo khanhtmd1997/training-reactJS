@@ -1,37 +1,28 @@
 .navbar {
-  background-color: #f8f8f8;
+  background-color: #e3f5fd;
   padding: 10px;
-}
-
-.navbar__logo {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.navbar__menu {
-  list-style-type: none;
   display: flex;
+  justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 4px rgb(248, 243, 243);
 }
 
-.navbar__item {
-  margin-right: 10px;
+.navbar .last-item {
+  margin-left: auto;
 }
-
-.navbar__item a {
+.navbar a {
   text-decoration: none;
-  color: #333;
-  padding: 5px;
+  color: #000000;
+  font-size: 18px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  margin: 0 10px;
 }
 
-.navbar__item a:hover {
-  color: #007bff;
+.navbar a:hover {
+  color: rgb(125, 214, 255);
 }
 
-.navbar__collapse {
-  display: none;
-}
-
-.toggle {
-  transform: rotate(180deg);
+.navbar a.active {
+  color: hsl(0, 0%, 100%);
 }
